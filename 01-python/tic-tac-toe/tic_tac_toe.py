@@ -1,4 +1,5 @@
 import re
+import random
 
 _PLAYER = "player"
 _MACHINE = "machine"
@@ -14,7 +15,56 @@ class TicTacToeGame():
     self.winner = None
 
   def is_over(self): # TODO: Finish this function by adding checks for a winning game (rows, columns, diagonals)
-    return self.board.count(None) == 0
+    isOver = False
+    isOver = self.verifyAdjacents(_PLAYER_SYMBOL)
+
+    if isOver == False:
+      isOver = self.verifyAdjacents(_MACHINE_SYMBOL)
+      
+      #gano la maquina
+      if isOver == True:
+        self.winner = _MACHINE
+    #gano la persona
+    else:
+      self.winner = _PLAYER
+
+    #empate
+    if isOver == False:
+      isOver = True
+      for item in self.board:
+        if item == None:
+          isOver=False
+    
+
+    return isOver
+
+  def verifyAdjacents(self, symbol):
+    threeAd = False
+
+    if self.equalIndexs(0,1,2,symbol):
+      threeAd = True
+    elif self.equalIndexs(3,4,5,symbol):
+      threeAd = True
+    elif self.equalIndexs(6,7,8,symbol):
+      threeAd = True
+    elif self.equalIndexs(0,3,6, symbol):
+      threeAd = True
+    elif self.equalIndexs(1,4,7,symbol):
+      threeAd = True
+    elif self.equalIndexs(2,5,8,symbol):
+      threeAd = True
+    elif self.equalIndexs(0,4,8,symbol):
+      threeAd = True
+    elif self.equalIndexs(2,4,6,symbol):
+      threeAd - True
+
+    return threeAd
+
+  def equalIndexs(self, i, j, k, symbol):
+    if(self.board[i] == symbol and self.board[j] == symbol and self.board[k] == symbol):
+      return True
+    else:
+      return False
 
   def play(self):
     if self.turn == _PLAYER:
@@ -53,17 +103,37 @@ class TicTacToeGame():
     # TODO: Implement this function to make the machine choose a random cell (use random module)
     # The result of this function should be that self.board now has one more random cell occupied
 
-    for i, cell in enumerate(self.board):
-      if cell is None:
-        self.board[i] = _MACHINE_SYMBOL
-        break
+    #for i, cell in enumerate(self.board):
+     # if cell is None:
+      #  self.board[i] = _MACHINE_SYMBOL
+       # break
+    marked = False
+    while not marked:
+      randomPosition = random.randint(0,8)
+      if self.board[randomPosition] == None:
+        self.board[randomPosition] = _MACHINE_SYMBOL
+        marked = True
 
   def format_board(self):
     # TODO: Implement this function, it must be able to print the board in the following format:
     #  x|o| 
     #   | | 
     #   | | 
-    return self.board
+    formatBoard = ""
+
+    for i, item in enumerate(self.board):
+      if (i+1)%3 == 0:
+        formatBoard += self.getItemValueToConcatenate(item) + "\n"
+      else:
+        formatBoard += self.getItemValueToConcatenate(item) + "|"
+
+    return formatBoard
+
+  def getItemValueToConcatenate(self, item):
+    if item == None:
+      return " "
+    else:
+      return item
 
   def print(self):
     print("Player turn:" if self.turn == _MACHINE else "Machine turn:")
@@ -72,5 +142,10 @@ class TicTacToeGame():
 
   def print_result(self):
     # TODO: Implement this function in order to print the result based on the self.winner
-
-    pass
+    #pass
+    if self.winner == _PLAYER:
+      print(" \n ! Player wins ! \n")
+    elif self.winner == _MACHINE:
+      print("\n ! Machine wins ! \n")
+    else:
+      print("\n ! Draw ! \n")
