@@ -1,4 +1,5 @@
 import re
+import random
 
 _PLAYER = "player"
 _MACHINE = "machine"
@@ -27,6 +28,7 @@ class TicTacToeGame():
     else:
       self.winner = _PLAYER
 
+    #empate
     if isOver == False:
       isOver = True
       for item in self.board:
@@ -101,17 +103,37 @@ class TicTacToeGame():
     # TODO: Implement this function to make the machine choose a random cell (use random module)
     # The result of this function should be that self.board now has one more random cell occupied
 
-    for i, cell in enumerate(self.board):
-      if cell is None:
-        self.board[i] = _MACHINE_SYMBOL
-        break
+    #for i, cell in enumerate(self.board):
+     # if cell is None:
+      #  self.board[i] = _MACHINE_SYMBOL
+       # break
+    marked = False
+    while not marked:
+      randomPosition = random.randint(0,8)
+      if self.board[randomPosition] == None:
+        self.board[randomPosition] = _MACHINE_SYMBOL
+        marked = True
 
   def format_board(self):
     # TODO: Implement this function, it must be able to print the board in the following format:
     #  x|o| 
     #   | | 
     #   | | 
-    return self.board
+    formatBoard = ""
+
+    for i, item in enumerate(self.board):
+      if (i+1)%3 == 0:
+        formatBoard += self.getItemValueToConcatenate(item) + "\n"
+      else:
+        formatBoard += self.getItemValueToConcatenate(item) + "|"
+
+    return formatBoard
+
+  def getItemValueToConcatenate(self, item):
+    if item == None:
+      return " "
+    else:
+      return item
 
   def print(self):
     print("Player turn:" if self.turn == _MACHINE else "Machine turn:")
@@ -120,5 +142,10 @@ class TicTacToeGame():
 
   def print_result(self):
     # TODO: Implement this function in order to print the result based on the self.winner
-
-    pass
+    #pass
+    if self.winner == _PLAYER:
+      print(" \n ! Player wins ! \n")
+    elif self.winner == _MACHINE:
+      print("\n ! Machine wins ! \n")
+    else:
+      print("\n ! Draw ! \n")
